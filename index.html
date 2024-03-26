@@ -19,6 +19,20 @@
         a {
             color: var(--tg-theme-link-color);
         }
+
+        #raceTrack {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            border: 2px solid #ddd;
+        }
+
+        #raceTrack div {
+            width: 50px;
+            height: 50px;
+            font-size: 48px;
+        }
+
         #viewport {
             position: fixed;
             left: 0;
@@ -64,30 +78,18 @@
 
 <body>
     <main>
-        <div align="center">
-            <a href="https://ton.org/"><img width="48" src="./assets/tapps.png" alt="logo of telegram web apps"></a>
-        </div>
-        <h1>Modals</h1>
-        <button onclick="Telegram.WebApp.showAlert('Hello World!');">Launch Alert</button>
-        <button onclick="showPopup();">Launch Popup</button>
-
-        <h1>Links</h1>
-        <ul>
-            <li>
-                <a href="javascript:Telegram.WebApp.openTelegramLink('https://t.me/trendingapps');">Open link within Telegram</a>
-            </li>
-            <li>
-                <a href="javascript:Telegram.WebApp.openLink('https://ton.org/');">Open link in external browser</a>
-            </li>
-            <li>
-                <a href="javascript:Telegram.WebApp.openLink('https://telegra.ph/api',{try_instant_view:true});">Open link inside Telegram webview</a>
-            </li>
-        </ul>
-
-        <h1>Buttons</h1>
-        <button onclick="Telegram.WebApp.expand();">Expand Webview</button>
-        <button onclick="toggleMainButton();">Toggle Main Button</button>
+    <div align="center">
+        <a href="https://ton.org/"><img width="48" src="./assets/tapps.png" alt="logo of telegram web apps"></a>
+    </div>
+    <h1>Camel Race</h1>
+    <div id="raceTrack">
+        <div id="camel1" style="position:relative;">🐪</div>
+        <div id="camel2" style="position:relative;">🐪</div>
+        <div id="camel3" style="position:relative;">🐪</div>
+    </div>
+    <button id="startRaceBtn">Start Race</button>
     </main>
+
     <div id="viewport"></div>
     <div id="viewport-params-size"></div>
     <div id="viewport-params-expand"></div>
@@ -154,6 +156,31 @@
         });
 
     </script>
+
+<script>
+document.getElementById('startRaceBtn').addEventListener('click', function() {
+    let winner = null;
+    let distance = [0, 0, 0];
+    let intervalId = setInterval(function() {
+        distance = distance.map((dist, index) => {
+            const advance = Math.random() * 10;
+            const camelId = `camel${index + 1}`;
+            document.getElementById(camelId).style.left = `${dist + advance}px`;
+            return dist + advance;
+        });
+
+        const raceTrackWidth = document.getElementById('raceTrack').offsetWidth;
+        distance.forEach((dist, index) => {
+            if (dist >= (raceTrackWidth - 50) && !winner) {
+                winner = index + 1;
+                clearInterval(intervalId);
+                Telegram.WebApp.showAlert(`Camel ${winner} wins!`);
+            }
+        });
+    }, 100);
+});
+
+</script>
 
     <!-- Eruda is console for mobile browsers -->
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
